@@ -5,8 +5,6 @@ import com.acoes.solinfbreaker.dto.StockDto;
 import com.acoes.solinfbreaker.model.UserStockBalances;
 import com.acoes.solinfbreaker.repository.UserOrdersRepository;
 import net.minidev.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,7 +22,6 @@ import java.util.List;
 @Service
 @RestController
 public class StockService {
-    private static final Logger logger = LoggerFactory.getLogger(StockService.class);
     @Autowired
     private WebClient webClient;
     @Autowired
@@ -39,10 +36,6 @@ public class StockService {
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .retrieve()
                 .bodyToMono(StockDto.class);
-
-        monoStock.subscribe(s -> {
-            logger.error("acabou");
-        });
         return monoStock.block();
     }
     @GetMapping("/stocks")
@@ -60,10 +53,10 @@ public class StockService {
     public StockDto teste1(Long id, @RequestHeader("Authorization") String token) {
         JSONObject json = new JSONObject();
         json.put("id", id);
-        json.put("ask_min", userOrdersRepository.getAskMin(id));
-        json.put("ask_max", userOrdersRepository.getAskMax(id));
-        json.put("bid_min", userOrdersRepository.getBidMin(id));
-        json.put("bid_max", userOrdersRepository.getBidMax(id));
+        json.put("askMin", userOrdersRepository.getAskMin(id));
+        json.put("askMax", userOrdersRepository.getAskMax(id));
+        json.put("bidMin", userOrdersRepository.getBidMin(id));
+        json.put("bidMax", userOrdersRepository.getBidMax(id));
         Mono<StockDto> monoStock =
                 this.webClient
                         .post()

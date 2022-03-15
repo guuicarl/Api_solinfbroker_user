@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 @Setter
 @Table (name="user_stock_balances")
 public class UserStockBalances implements Serializable {
+    private static final long serialVersionUID = 2405172041950251807L;
     @EmbeddedId
     private UserStockBalance id;
     @Column(name = "stock_symbol")

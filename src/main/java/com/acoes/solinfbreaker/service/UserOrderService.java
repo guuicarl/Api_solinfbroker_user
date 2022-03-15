@@ -37,8 +37,7 @@ public class UserOrderService {
     public UserOrders match(UserOrders dto){
         List<UserOrders> userOrders = userOrdersRepository.pegandoMatch(dto.getIdStock(), dto.getType());
         for (UserOrders cont: userOrders) {
-            if (!userOrders.isEmpty()) {
-                if (dto.getType() == 0 && dto.getPrice() >= cont.getPrice() || dto.getType() == 1 && dto.getPrice() <= cont.getPrice()) {
+                if (!userOrders.isEmpty() && dto.getType() == 0 && dto.getPrice() >= cont.getPrice() ||!userOrders.isEmpty() && dto.getType() == 1 && dto.getPrice() <= cont.getPrice()) {
                     //Atualiza o remaining value
                     Long remainingValueNova = dto.getRemainingValue();
                     Long remainingValueOrder = cont.getRemainingValue();
@@ -48,11 +47,10 @@ public class UserOrderService {
                     dto.getUser().setDollarBalance(dollarBalance(dto.getUser().getDollarBalance(), remainingValueNova, remainingValueOrder, dto.getPrice(), cont.getPrice(), dto.getType()));
                     cont.getUser().setDollarBalance(dollarBalance(cont.getUser().getDollarBalance(), remainingValueNova, remainingValueOrder, cont.getPrice(), dto.getPrice(),cont.getType()));
                     //Atualiza carteira do usuario
-                    atualizarUsbVenda(dto.getVolume(), dto.getRemainingValue(), dto.getType(),dto.getUser(), dto.getIdStock(), dto.getStockName(), dto.getStockSymbol(), remainingValueNova);
-                    atualizarUsbVenda(cont.getVolume(), cont.getRemainingValue(), cont.getType(), cont.getUser(), cont.getIdStock(),cont.getStockName(), cont.getStockSymbol(),remainingValueOrder);
+                    atualizarUsbVenda(dto.getVolume(), dto.getRemainingValue(), dto.getType(),dto.getUser(), dto.getIdStock(), dto,remainingValueNova);
+                    atualizarUsbVenda(cont.getVolume(), cont.getRemainingValue(), cont.getType(), cont.getUser(), cont.getIdStock(),cont,remainingValueOrder);
 
                 }
-            }
         }
         userOrdersRepository.updateStatus2();
         return null;
@@ -84,12 +82,11 @@ public class UserOrderService {
     }
 
     public Double fecharOrdemC(Long volume, Double price, Double dollar, Integer tipo, Long remaining){
-        if (tipo == 0 && remaining == volume){
+        if (tipo == 0 && remaining.equals(volume)){
             return dollar + volume  * price;
-        } else if (tipo ==0 && remaining != volume) {
+        } else {
             return dollar + remaining * price;
         }
-        return dollar;
     }
 
     public void volumeDisponivel(UserOrders uo){
@@ -99,20 +96,20 @@ public class UserOrderService {
 
     public void fecharOrdemV(User user, Long idStock, Integer tipo, Long remaining, Long volume){
         List<UserStockBalances> userStockBalances1 = repository.atualizarBalanceTeste(user, idStock);
-        if (tipo == 1 && remaining == volume){
+        if (tipo == 1 && remaining.equals(volume)){
             userStockBalances1.get(0).setVolume(userStockBalances1.get(0).getVolume() + volume);
-        } else if (tipo ==1 && remaining != volume){
+        } else if (tipo ==1 && !remaining.equals(volume)){
             userStockBalances1.get(0).setVolume(userStockBalances1.get(0).getVolume() + remaining);
         }
     }
 
-    public void atualizarUsbVenda (Long volume, Long remaining, Integer tipo, User user, Long idStock, String name, String symbol, Long remaining2){
+    public void atualizarUsbVenda (Long volume, Long remaining, Integer tipo, User user, Long idStock, UserOrders uo, Long remaining2){
         List<UserStockBalances> userStockBalances1 = repository.atualizarBalanceTeste(user, idStock);
         if(userStockBalances1.isEmpty()){
-            repository.save(new UserStockBalances(new UserStockBalance(user, idStock), symbol, name, volume));
+            repository.save(new UserStockBalances(new UserStockBalance(user, idStock), uo.getStockSymbol(), uo.getStockName(), volume));
         } else if(tipo == 0 && remaining != 0){
             userStockBalances1.get(0).setVolume(userStockBalances1.get(0).getVolume() + (volume-remaining));
-        } else if(tipo == 0 && remaining == 0){
+        } else {
             userStockBalances1.get(0).setVolume(userStockBalances1.get(0).getVolume() + remaining2);
         }
     }
