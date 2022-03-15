@@ -88,7 +88,7 @@ public class UserOrderService {
             return dollar + remaining * price;
         }
     }
-
+//teste
     public void volumeDisponivel(UserOrders uo){
         List<UserStockBalances> usb = repository.atualizarBalanceTeste(uo.getUser(), uo.getIdStock());
         usb.get(0).setVolume(usb.get(0).getVolume() - uo.getVolume());
