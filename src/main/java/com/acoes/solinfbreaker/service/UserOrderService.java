@@ -13,13 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserOrderService {
@@ -88,7 +85,7 @@ public class UserOrderService {
             return dollar + remaining * price;
         }
     }
-
+//teste
     public void volumeDisponivel(UserOrders uo){
         List<UserStockBalances> usb = repository.atualizarBalanceTeste(uo.getUser(), uo.getIdStock());
         usb.get(0).setVolume(usb.get(0).getVolume() - uo.getVolume());
@@ -118,15 +115,11 @@ public class UserOrderService {
         return userOrdersRepository.listOrders(idUser, page);
     }
 
-    public void update(Long id, Map<String, Object> request){
+    public void update(Long id){
         UserOrders uo  = userOrdersRepository.findById(id).orElseThrow(() -> {
            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nao encontrado");
         });
-        request.forEach((k,v) -> {
-            Field field = ReflectionUtils.findField(UserOrders.class, k);
-            field.setAccessible(true);
-            ReflectionUtils.setField(field, uo, v);
-        });
+        uo.setStatus(2);
         userOrdersRepository.save(uo);
     }
 
