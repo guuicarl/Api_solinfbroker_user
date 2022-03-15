@@ -1,7 +1,6 @@
 package com.acoes.solinfbreaker.controller;
 
 import com.acoes.solinfbreaker.dto.StockDto;
-import com.acoes.solinfbreaker.dto.TesteDto;
 import com.acoes.solinfbreaker.dto.UserOrdersDto;
 import com.acoes.solinfbreaker.model.User;
 import com.acoes.solinfbreaker.model.UserOrders;
@@ -12,15 +11,12 @@ import com.acoes.solinfbreaker.repository.UsersRepository;
 import com.acoes.solinfbreaker.service.StockService;
 import com.acoes.solinfbreaker.service.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,18 +56,12 @@ public class UserOrdersController {
 
     @PostMapping("/orders")
     public ResponseEntity<UserOrders> salvar(@RequestBody UserOrdersDto dto ,@RequestHeader("Authorization") String token){
-        System.out.println("chego aqui" + dto.getIdUser() + " ver se veio nulo tbm "+ dto.getType()+ " id stock" + dto.getIdStock() + " price " + dto.getPrice() + " stock symbol" + dto.getStockSymbol());
         User user = usersRepository.findById(dto.getIdUser()).orElseThrow();
-        System.out.println("chego aqui2");
         List<UserStockBalances> verificar = usbRepository.verficarStock(dto.getIdUser(),dto.getIdStock());
-        System.out.println("chego aqui3");
         Double dollar = user.getDollarBalance();
-        System.out.println("chego aqui4");
         Double mult = dto.getPrice() * dto.getVolume();
         if(dollar >= mult && dto.getType() == 0) {//verifica se o usuario tem dinheiro na carteira pra criar uma ordem de compra
-            System.out.println("chego aqui5");
             UserOrders userOrders = userOrdersRepository.save(dto.tranformaParaObjeto1(user));
-            System.out.println("chego aqui");
             stockService.teste1(userOrders.getIdStock(), token);
             userOrderService.dollarDisponivel(userOrders);
             userOrderService.match(userOrders);
@@ -103,10 +93,14 @@ public class UserOrdersController {
     @PatchMapping("/alterar/{id}")
     public String alterar1(@PathVariable Long id, @RequestBody Map<String, Object> request){
         Optional<UserOrders> userOrders = userOrdersRepository.findById(id);
-        userOrders.get().getUser().setDollarBalance(userOrderService.fecharOrdemC(userOrders.get().getVolume(), userOrders.get().getPrice(), userOrders.get().getUser().getDollarBalance(), userOrders.get().getType(), userOrders.get().getRemainingValue()));
-        userOrderService.fecharOrdemV(userOrders.get().getUser(), userOrders.get().getIdStock(), userOrders.get().getType(), userOrders.get().getRemainingValue(), userOrders.get().getVolume());
-        userOrderService.update(id, request);
-        return "Ordem atualizada";
+        if(userOrders.isPresent()) {
+            userOrders.get().getUser().setDollarBalance(userOrderService.fecharOrdemC(userOrders.get().getVolume(), userOrders.get().getPrice(), userOrders.get().getUser().getDollarBalance(), userOrders.get().getType(), userOrders.get().getRemainingValue()));
+            userOrderService.fecharOrdemV(userOrders.get().getUser(), userOrders.get().getIdStock(), userOrders.get().getType(), userOrders.get().getRemainingValue(), userOrders.get().getVolume());
+            userOrderService.update(id, request);
+            return "Ordem atualizada";
+        } else {
+            return null;
+        }
     }
 
 }

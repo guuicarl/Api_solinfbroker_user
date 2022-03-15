@@ -1,5 +1,6 @@
 package com.acoes.solinfbreaker.controller;
 
+import com.acoes.solinfbreaker.dto.UserDto;
 import com.acoes.solinfbreaker.model.User;
 import com.acoes.solinfbreaker.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,8 @@ public class UserController {
 
 
     @PostMapping("/users")
-    public User adicionar(@RequestBody User user) {
-        return usersRepository.save(user);
+    public User adicionar(@RequestBody UserDto user) {
+        return usersRepository.save(user.tranformaParaObjeto1());
 
     }
 
