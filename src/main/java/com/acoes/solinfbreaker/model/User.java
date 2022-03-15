@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 @Entity
 @Table (name = "users")
 public class User implements Serializable {
+    private static final long serialVersionUID = 1905122041950251207L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

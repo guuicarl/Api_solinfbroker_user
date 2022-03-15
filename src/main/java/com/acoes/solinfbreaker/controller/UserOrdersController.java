@@ -96,7 +96,7 @@ public class UserOrdersController {
         if(userOrders.isPresent()) {
             userOrders.get().getUser().setDollarBalance(userOrderService.fecharOrdemC(userOrders.get().getVolume(), userOrders.get().getPrice(), userOrders.get().getUser().getDollarBalance(), userOrders.get().getType(), userOrders.get().getRemainingValue()));
             userOrderService.fecharOrdemV(userOrders.get().getUser(), userOrders.get().getIdStock(), userOrders.get().getType(), userOrders.get().getRemainingValue(), userOrders.get().getVolume());
-            userOrderService.update(id, request);
+            userOrderService.update(id);
             return "Ordem atualizada";
         } else {
             return null;
