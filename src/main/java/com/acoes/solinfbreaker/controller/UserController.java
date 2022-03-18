@@ -5,7 +5,6 @@ import com.acoes.solinfbreaker.model.User;
 import com.acoes.solinfbreaker.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +14,6 @@ public class UserController {
 
     @Autowired
     private UsersRepository usersRepository;
-    @Autowired
-    private WebClient webClient;
 
     @GetMapping("/users")
     public List<User> listar(){

@@ -106,7 +106,7 @@ public class UserOrderService {
             repository.save(new UserStockBalances(new UserStockBalance(user, idStock), uo.getStockSymbol(), uo.getStockName(), volume));
         } else if(tipo == 0 && remaining != 0){
             userStockBalances1.get(0).setVolume(userStockBalances1.get(0).getVolume() + (volume-remaining));
-        } else {
+        } else if (tipo != 1){
             userStockBalances1.get(0).setVolume(userStockBalances1.get(0).getVolume() + remaining2);
         }
     }
