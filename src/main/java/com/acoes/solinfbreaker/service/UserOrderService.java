@@ -103,7 +103,7 @@ public class UserOrderService {
     public void atualizarUsbVenda (Long volume, Long remaining, Integer tipo, User user, Long idStock, UserOrders uo, Long remaining2){
         List<UserStockBalances> userStockBalances1 = repository.atualizarBalanceTeste(user, idStock);
         if(userStockBalances1.isEmpty()){
-            repository.save(new UserStockBalances(new UserStockBalance(user, idStock), uo.getStockSymbol(), uo.getStockName(), volume));
+            repository.save(new UserStockBalances(new UserStockBalance(user, idStock), uo.getStockSymbol(), uo.getStockName(), volume - remaining));
         } else if(tipo == 0 && remaining != 0){
             userStockBalances1.get(0).setVolume(userStockBalances1.get(0).getVolume() + (volume-remaining));
         } else if (tipo != 1){

@@ -33,7 +33,6 @@ public interface UserOrdersRepository extends JpaRepository<UserOrders, Long> {
     @Query(value = "select * from user_orders uo where id_user=?1", nativeQuery = true)
     Page<UserOrders> listOrders(Long idUser, Pageable page);
 
-//    todos testes novos abaixo qualquer coisa apaga tudo
     @Query(value = "select * from user_orders uo where id_stock = ?1 and type <> ?2 and status <> 2 order by created_on asc", nativeQuery = true)
     List<UserOrders> pegandoMatch(Long idStock, Integer type);
 
