@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(origins = { "http://localhost:8081/", "http://localhost:4440/"})
 @RestController
 public class UserStockBalancesController {
 

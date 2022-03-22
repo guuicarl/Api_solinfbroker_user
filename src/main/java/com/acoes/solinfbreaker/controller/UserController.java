@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin
+@CrossOrigin(origins = { "http://localhost:8081/", "http://localhost:4440/"})
 @RestController
 public class UserController {
 

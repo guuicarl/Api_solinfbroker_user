@@ -23,7 +23,7 @@ public class UserStockBalances implements Serializable {
     private String stockName;
     private Long volume;
     @CreationTimestamp
-    @Column(name = "created_on")
+    @Column(name = "created_on", updatable = false)
     private Timestamp created;
     @UpdateTimestamp
     @Column(name = "updated_on")
